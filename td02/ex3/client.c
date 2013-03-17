@@ -18,27 +18,33 @@ int main(int argc, char *argv[])
 	}
 	
 	
-	struct sockaddr_in serverAddr,clientAddr;
+	struct sockaddr_in serverAddr;
 	struct hostent * hid;
-	bzero(&serverAddr,sizeof(serverAddr));
 	int sd=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
 	char buff[500];
 	int to_read = -1;
+	int read = 0;
+	int size_msg = 0;
 	ssize_t size = 0;
 	
+	hid = gethostbyname(argv[1]);
+	if (hid == NULL)
+	{
+		perror("gethostbyname");
+		exit(1);
+	}
+	bzero(&serverAddr,sizeof(serverAddr));
 	serverAddr.sin_family=AF_INET;
 	serverAddr.sin_port=htons(atoi(argv[2]));
-	
-	
-	hid = gethostbyname(argv[1]);
-	
 	bcopy(hid->h_addr,&(serverAddr.sin_addr.s_addr),hid->h_length);
 	
-	if (connect(sd,(struct sockaddr *) &serverAddr,sizeof(serverAddr))<0)
+	if (connect(sd,(struct sockaddr *) &serverAddr,sizeof(serverAddr)) < 0)
 	{
 		perror("error connect");
-		exit(1); 
+		exit(1);
 	}
+	
+	puts("Connected to the server");
 	
 	obj o;
 	
@@ -55,31 +61,37 @@ int main(int argc, char *argv[])
 	
 	// get response
 	
-	// get size to read
-	if ((size=recv(sd, &to_read, sizeof(to_read), 0)) < 0)
+	// get size of messag
+	size_msg = 0;
+	read = 0;
+	to_read = sizeof(size_msg);
+	size = -1;
+	while (read < to_read)
 	{
-		perror("error rcv");
-		exit(1);
-	
+		if ((size=recv(sd, ((char*)&size_msg)+read, to_read-read, 0)) < 0)
+		{
+			perror("error rcv");
+			exit(1);
+		
+		}
+		read += size;
 	}
-	if (size!=sizeof(to_read))
-	{
-		perror("size");
-		exit(1);
-	}
 	
-	printf("Je vais lire %d octets\n", to_read);
+	printf("Je vais lire %d octets\n", size_msg);
 	
 	// get object
-	if ((size=recv(sd, &o, to_read, 0)) < 0)
+	read = 0;
+	to_read = sizeof(size_msg);
+	size = -1;
+	while (read < to_read)
 	{
-		perror("error rcv");
-		exit(1);
-	}
-	if (size!=to_read)
-	{
-		perror("size");
-		exit(1);
+		if ((size=recv(sd, ((char*)&o)+read, to_read-read, 0)) < 0)
+		{
+			perror("error rcv");
+			exit(1);
+		
+		}
+		read += size;
 	}
 	
 	puts("recv from server : ");

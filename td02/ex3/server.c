@@ -79,17 +79,10 @@ int main(int argc, char *argv[])
 			printf("Client %s run on process %d\n", inet_ntoa(clientAddr.sin_addr), getpid());
 			while (1)
 			{
-				if ((size=recv(clntSock, &o, sizeof(o), 0)) < 0)
-                {
-                    perror("error rcv");
-                    exit(1);            
-                
-                }
-                if (size!=sizeof(o))
-                {
-                    perror("size");
-                    exit(1);
-                }
+                if (recvObj(clntSock, &o) < 0) {
+					perror("recvObj");
+					exit(1);
+				}
                 
                 printf("recv from client %s (pid=%d): ", inet_ntoa(clientAddr.sin_addr), getpid());
                 printObj(&o);
@@ -97,6 +90,8 @@ int main(int argc, char *argv[])
                 
                 //printf("o.iqt = %d\n", o.iqt);
                 
+				sleep(1);
+				
                 if (o.iqt < 0) break;
                 else {
 							
@@ -111,7 +106,6 @@ int main(int argc, char *argv[])
 				}
 			}
 			
-			sleep(1);
 			
 			printf("End client %s (pid=%d)\n", inet_ntoa(clientAddr.sin_addr), getpid());
 			
