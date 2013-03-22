@@ -10,6 +10,7 @@
 
 
 
+
 #include "../ex1/defobj.h"
 
 void childDieHandler(int sig)
@@ -108,7 +109,7 @@ int main(int argc, char *argv[])
 			
 			
 			printf("End client %s (pid=%d)\n", inet_ntoa(clientAddr.sin_addr), getpid());
-			
+			close(clntSock);
 			exit(0);
 		}
 		else

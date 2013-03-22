@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 	o.iqt = -1;
 	
 	send(sd,&o,sizeof(o),0);
-	
+	close(sd);
 	
 	return 0;
 }

@@ -62,5 +62,6 @@ int main(int argc, char *argv[])
         send(sd,&tabObj[i],sizeof(tabObj[i]),0);
     }
     
+    close(sd);
     return 0;
 }

@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
 	o.dd = 7.7;
 	
 	send(sd,&o,sizeof(o),0);
+    close(sd);
 	
 	
 	return 0;

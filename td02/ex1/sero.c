@@ -85,6 +85,8 @@ int main(int argc, char *argv[])
                 if (o.iqt < 0) break;
             }
             
+            exit(0);
+            
         }
         else
         {   //cas du pere
@@ -92,8 +94,17 @@ int main(int argc, char *argv[])
             int status=-1;
             waitpid(pid, &status, WUNTRACED);
             printf("pid : %d\n", status);
+            
+            if (status == 0)
+            {
+                close(clntSock);
+                break;
+                
+            }
         }
     }
+    
+    printf("Arret serveur\n");
     
     
     return 0;

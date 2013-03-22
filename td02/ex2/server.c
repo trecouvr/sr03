@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
             
             //printf("o.iqt = %d\n", o.iqt);
             
-            sleep(10);
+            sleep(1);
 			
 			printf("End client %s (pid=%d)\n", inet_ntoa(clientAddr.sin_addr), getpid());
 			
